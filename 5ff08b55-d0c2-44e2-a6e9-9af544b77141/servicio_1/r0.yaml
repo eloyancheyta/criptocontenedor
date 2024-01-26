@@ -1,0 +1,112 @@
+version: '3'
+services:
+  acceso:
+    image: acceso
+    # build: .
+    environment:
+      - nombre_servicio=servicio_1
+      - puerto_inter_cc=55000
+      - ip=148.247.204.172
+    ports:
+      - "55000:55000" # exponer el puerto 58000 para comunicación inter criptocontenedores a nivel acceso
+      # - "5000:5000" # abrir puerto intra cc solo para preubas
+  # CONSENSO 
+  consenso:    
+    image: consenso
+    # build: .
+    environment:    
+      - nombre_servicio=servicio_1
+      - puerto_inter_cc=54000
+      - ip=148.247.204.172 # 148.247.204.187  # 148.247.204.103 # o nombre de dominio
+    ports:
+      - "54000:54000" # exponer el puerto 58000 para comunicación inter criptocontenedores a nivel acceso
+
+  # GESTOR DE MAPAS DE SERVICIO
+  gestor_mapa_servicio:
+    image: gestor_mapa_servicio
+    # build: .
+    environment:
+      - nombre_servicio=servicio_1
+      
+ # MALLA DE SERVICIOS DE SEGURIDAD
+
+  # CONFIDENCIALIDAD
+  aes:
+    image: aes
+    # build: .
+    environment:
+      - nombre_servicio=servicio_1
+  lea:
+    image: lea
+    # build: .
+    environment:
+      - nombre_servicio=servicio_1      
+      
+  ascon: 
+    image: ascon
+    # build: . 
+    environment:
+      - nombre_servicio=servicio_1
+         
+  # INTEGRIDAD
+  hmac:
+    image: hmac
+    # build: .    
+    environment:
+      - nombre_servicio=servicio_1
+  sha:
+    image: sha
+    # build: .    
+    environment:
+      - nombre_servicio=servicio_1
+  sha3:
+    image: sha3
+    # build: .    
+    environment:
+      - nombre_servicio=servicio_1
+
+  # CONTROL DE ACCESO
+  # sobres digitales y acuerdo de llaves para control de acceso
+  x25519:
+    image: x25519
+    # build: .  
+    environment:
+      - nombre_servicio=servicio_1
+
+   # Actualmente solo el servicio_1-0 en el mapa de servicio usa RSA, para hacer pruebas de crear sobre
+   # debo ser el servicio_2 y para abrir sobres debo sr el servicio_1-0
+  rsa:
+    image: rsa
+    # build: .
+    environment:
+      - nombre_servicio=servicio_1
+
+  # autenticación para control de acceso (TOTP)
+  totp:
+    image: totp
+    # build: .   
+    environment:
+      - nombre_servicio=servicio_1
+
+  derivar_llave:
+    image: derivar_llave
+    # build: .     
+    environment:
+      - nombre_servicio=servicio_1
+
+  #
+  gestor_almacen_llaves:
+    image: gestor_almacen_llaves
+    # build: .
+    environment:
+      - nombre_servicio=servicio_1
+      
+
+  # App
+  app:
+    image: app
+    environment:
+      - nombre_servicio=servicio_1  
+  
+networks:
+  cc-network:

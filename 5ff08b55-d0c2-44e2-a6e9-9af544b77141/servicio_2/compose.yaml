@@ -1,0 +1,311 @@
+version: '3'
+services:
+  # ACESSO DESCENTRALIZADO
+  # ACCESO
+  acceso:
+    # image: acceso
+    build:
+      context: ./Acceso/app
+      dockerfile: Dockerfile 
+   # deploy:
+   #   mode: replicated
+   #   replicas: 6   
+   #   resources:
+   #     limits:
+   #       cpu_count: '1' #2
+   #       memory: 4096M
+   #       pids: 4
+   #     reservations:
+   #       cpu_count: '1'
+   #       memory: 1024M
+    environment:      
+      - nombre_servicio=nombre_servicio # el nombre del servicio, podría ir definido en un archivo distinto
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - ruta_almacen_llaves_mapa_servicio=/almacenamiento/almacen_llaves_mapa_servicio
+      - puerto_inter_cc=58000
+      - puerto_intra_cc=5000 
+      # - ip=148.247.204.19
+      # - ip_testing=148.247.204.187  #148.247.204.187  # 148.247.204.103
+    # ports:
+    #  - "58000:58000" # exponer el puerto 58000 para comunicación inter criptocontenedores a nivel acceso
+    volumes:
+      - ./Acceso/app:/app
+      - ./Acceso/almacenamiento:/almacenamiento
+    networks:
+      - cc-network 
+    depends_on:
+      - gestor_mapa_servicio
+      - gestor_almacen_llaves
+      - derivar_llave
+      - x25519 
+      - aes
+   # cpu_count: "1"
+  # CONSENSO 
+  consenso:
+    # image: acceso
+    build:
+      context: ./Consenso/app
+      dockerfile: Dockerfile    
+    environment:
+      - nombre_servicio=nombre_servicio # el nombre del servicio, podría ir definido en un archivo distinto
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      # - ruta_almacen_llaves_mapa_servicio=/almacenamiento/almacen_llaves_mapa_servicio
+      - ruta_config=/app/consenso.json
+      - puerto_inter_cc=57000
+      - puerto_intra_cc=5000 
+      # - ip_testing=148.247.204.103  #148.247.204.187  # 148.247.204.103
+      # - ip=148.247.204.19  #148.247.204.187  # 148.247.204.103 # o nombre de dominio
+      #  148.247.204.103
+    # ports:
+      # - "57000:57000" # exponer el puerto 58000 para comunicación inter criptocontenedores a nivel acceso
+    volumes:
+      - ./Consenso/app:/app
+      - ./Consenso/almacenamiento:/almacenamiento
+    networks:
+      - cc-network 
+    depends_on:
+      - gestor_mapa_servicio
+      - gestor_almacen_llaves
+      - derivar_llave
+      - aes  
+
+  # GESTOR DE MAPAS DE SERVICIO
+  gestor_mapa_servicio:
+    # image: gestor_mapa_servicio
+    build:
+      context: ./GestorMapaServicio/app
+      dockerfile: Dockerfile 
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - ruta_mapa_servicio=/almacenamiento/mapa_servicio
+      - puerto_intra_cc=5000
+    volumes:
+      - ./GestorMapaServicio/app:/app
+      - ./GestorMapaServicio/almacenamiento:/almacenamiento
+    networks:
+      - cc-network
+
+ # MALLA DE SERVICIOS DE SEGURIDAD
+
+  # CONFIDENCIALIDAD
+  aes:
+    #build: .
+    #image: aes
+    build:
+      context: ./AES/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./AES/app:/app
+      - ./AES/almacenamiento:/almacenamiento
+    networks:
+      - cc-network 
+  lea:
+    #build: .
+    #image: aes
+    build:
+      context: ./LEA/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./LEA/app:/app
+      - ./LEA/almacenamiento:/almacenamiento
+    networks:
+      - cc-network
+
+  ascon:
+    #build: .
+    #image: ascon
+    build:
+      context: ./ASCON/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./ASCON/app:/app
+      - ./ASCON/almacenamiento:/almacenamiento
+    networks:
+      - cc-network       
+
+  # INTEGRIDAD
+  hmac:
+    #build: .
+    #image: hmac
+    build:
+      context: ./HMAC/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./HMAC/app:/app
+      - ./HMAC/almacenamiento:/almacenamiento
+    networks:
+      - cc-network
+  sha:
+    #build: .
+    #image: sha
+    build:
+      context: ./SHA/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./SHA/app:/app
+      - ./SHA/almacenamiento:/almacenamiento
+    networks:
+      - cc-network    
+  sha3:
+    #build: .
+    #image: sha3
+    build:
+      context: ./SHA3/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./SHA3/app:/app
+      - ./SHA3/almacenamiento:/almacenamiento
+    networks:
+      - cc-network            
+
+  # CONTROL DE ACCESO
+  # sobres digitales y acuerdo de llaves para control de acceso
+  x25519:
+    # image: x25519
+    build:
+      context: ./X25519/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio # el nombre del servicio, podría ir definido en un archivo distinto
+      - puerto_intra_cc=5000
+    networks:
+      - cc-network
+    depends_on:
+      - gestor_almacen_llaves
+      - derivar_llave
+
+   # Actualmente solo el servicio_1-0 en el mapa de servicio usa RSA, para hacer pruebas de crear sobre
+   # debo ser el servicio_2 y para abrir sobres debo sr el servicio_1-0
+  rsa:
+    # image: rsa
+    build:
+      context: ./RSA/app
+      dockerfile: Dockerfile    
+    environment:
+      - nombre_servicio=nombre_servicio # el nombre del servicio, podría ir definido en un archivo distinto
+      - puerto_intra_cc=5000
+    networks:
+      - cc-network
+    depends_on:
+      - gestor_almacen_llaves
+      - derivar_llave
+  # autenticación para control de acceso (TOTP)
+  totp:
+    #build: .
+    #image: totp
+    build:
+      context: ./TOTP/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./TOTP/app:/app
+      - ./TOTP/almacenamiento:/almacenamiento
+    networks:
+      - cc-network 
+
+  derivar_llave:
+    #build: .
+    #image: derivar_llave
+    build:
+      context: ./DerivarLlave/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./DerivarLlave/app:/app
+      - ./DerivarLlave/almacenamiento:/almacenamiento
+    networks:
+      - cc-network       
+
+  #
+  gestor_almacen_llaves:
+    # image: gestor_almacen_llaves
+    build:
+      context: ./GestorAlmacenLlaves/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio # el nombre del servicio, podría ir definido en un archivo distinto
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - ruta_almacen_llaves_mapa_servicio=/almacenamiento/almacen_llaves_mapa_servicio
+      - puerto_intra_cc=5000
+    volumes:
+      - ./GestorAlmacenLlaves/app:/app
+      - ./GestorAlmacenLlaves/almacenamiento:/almacenamiento
+    networks:
+      - cc-network   
+
+  # App
+  app:
+    build:
+      context: ./App/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=nombre_servicio # el nombre del servicio, podría ir definido en un archivo distinto
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - puerto_intra_cc=5000
+    volumes:
+      - ./App/app:/app
+      - ./App/almacenamiento:/almacenamiento
+    networks:
+      - cc-network 
+    depends_on:     
+      - gestor_mapa_servicio
+      - gestor_almacen_llaves
+      - derivar_llave
+      - x25519 
+      - rsa 
+      - totp
+      - aes    
+      - ascon
+      - lea
+      - hmac 
+      - consenso 
+      - acceso      
+  
+
+
+networks:
+  cc-network:

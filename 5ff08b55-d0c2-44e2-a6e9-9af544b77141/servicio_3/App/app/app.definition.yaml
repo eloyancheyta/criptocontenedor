@@ -1,0 +1,27 @@
+  app_servicio_1:
+    # image: app
+    build:
+      context: ./App/app
+      dockerfile: Dockerfile     
+    environment:
+      - nombre_servicio=servicio_1 # el nombre del servicio, podría ir definido en un archivo distinto
+      - ruta_keystore_config=/almacenamiento/keystore.config
+      - ruta_keystore_key=/almacenamiento/keystore.weak.key
+      - ruta_almacen_llaves_mapa_servicio=/almacenamiento/almacen_llaves_mapa_servicio
+      - puerto_intra_cc=5000
+    volumes:
+      - ./App/app:/app
+      - ./App/almacenamiento:/almacenamiento
+    networks:
+      - cc-network-servicio_1 
+    depends_on:     
+      - gestor_mapa_servicio_servicio_1
+      - gestor_almacen_llaves_servicio_1
+      - derivar_llave_servicio_1
+      - x25519_servicio_1 
+      - rsa_servicio_1 
+      - totp_servicio_1
+      - aes_servicio_1    
+      - ascon_servicio_1 
+      - consenso_servicio_1 
+      - acceso_servicio_1    

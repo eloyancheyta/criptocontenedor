@@ -1,0 +1,107 @@
+{
+  "id": "5ff08b55-d0c2-44e2-a6e9-9af544b77141",
+  "lista_servicios": [
+    {
+      "nombre_servicio": "servicio_1",
+      "algoritmo_de_llave_publica": "RSA", 
+      "lider": {
+        "IP": "148.247.204.172", 
+        "puerto": 55000
+      },
+      "lista_replicas_servicio": [
+        {
+          "IP": "148.247.204.172",
+          "puerto": 55000 
+        }
+      ],
+      "servicios_de_seguridad": {
+        "confidencialidad": {
+          "algoritmo": "AES",
+          "nivel_de_seguridad": 128,
+          "salt": "53414C54",
+          "iteraciones": 65356,
+          "vector_de_inicializacion": "6C756DCC0187F9F612CBAF16A52862B9"
+        },
+        "integridad": {
+          "algoritmo": "hmac",
+          "nivel_de_seguridad": 256
+        },
+        "control_de_acceso": {
+          "algoritmo": "TOTP",
+          "nivel_de_seguridad": 6,
+          "ventana_temporal": 1,
+          "contador": 10,
+          "intervalo_de_tiempo": 10
+        }
+      }
+    },
+    {
+      "nombre_servicio": "servicio_2",
+      "algoritmo_de_llave_publica": "RSA",
+      "lider": {
+        "IP": "148.247.204.172",
+        "puerto": 55100
+      },
+      "lista_replicas_servicio": [
+        {
+          "IP": "148.247.204.172",
+          "puerto": 55100
+        }
+      ],
+      "servicios_de_seguridad": {
+        "confidencialidad": {
+          "algoritmo": "AES",
+          "nivel_de_seguridad": 128,
+          "salt": "53414C54",
+          "iteraciones": 65356,
+          "vector_de_inicializacion": "6C756DCC0187F9F612CBAF16A52862B9"
+        },
+        "integridad": {
+          "algoritmo": "hmac",
+          "nivel_de_seguridad": 256
+        },
+        "control_de_acceso": {
+          "algoritmo": "TOTP",
+          "nivel_de_seguridad": 6,
+          "ventana_temporal": 1,
+          "contador": 10,
+          "intervalo_de_tiempo": 10
+        }
+      }
+    },
+    {
+      "nombre_servicio": "servicio_3",
+      "algoritmo_de_llave_publica": "RSA",
+      "lider": {
+        "IP": "148.247.204.172",
+        "puerto": 55200
+      },
+      "lista_replicas_servicio": [
+        {
+          "IP": "148.247.204.172",
+          "puerto": 55200
+        }
+      ],
+      "servicios_de_seguridad": {
+        "confidencialidad": {
+          "algoritmo": "AES",
+          "nivel_de_seguridad": 128,
+          "salt": "53414C54",
+          "iteraciones": 65356,
+          "vector_de_inicializacion": "6C756DCC0187F9F612CBAF16A52862B9"
+        },
+        "integridad": {
+          "algoritmo": "hmac",
+          "nivel_de_seguridad": 256
+        },
+        "control_de_acceso": {
+          "algoritmo": "TOTP",
+          "nivel_de_seguridad": 6,
+          "ventana_temporal": 1,
+          "contador": 10,
+          "intervalo_de_tiempo": 10
+        }
+      }
+    }
+  ]
+}
